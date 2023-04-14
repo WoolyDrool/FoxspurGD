@@ -1,6 +1,7 @@
 # Code from Godot docs FPS tutorial
 
 extends CharacterBody3D
+class_name Player
 
 # Controller variables
 @export var MAX_SPEED = 20
@@ -8,16 +9,26 @@ extends CharacterBody3D
 @export var ACCEL = 4.5
 @export var DEACCEL= 16
 @export var MAX_SLOPE_ANGLE = 40
+
+# Camera variables
 @export var MOUSE_SENSITIVITY = 0.05
+@export var MOUSE_SMOOTHING = 10
+@export var CAM_SWAY : Vector3
+@export var CAM_SWAY_NORMAL : Vector3
+@export var CAM_SWAY_THRESH = 5
+@export var CAM_SWAY_LERP = 5
+var mousemov
 
 # Internal variables
 var GRAVITY = -ProjectSettings.get_setting("physics/3d/default_gravity")
 var vel = Vector3()
 var dir = Vector3()
+var cam_input : Vector2
+var rotation_velocity : Vector2
 
 # Refs
-var camera
-var rotation_helper
+@export var camera : Camera3D
+@export var rotation_helper : Node3D
 
 # TODO ----
 # 1 Make angles/sliding feel better. Its very snappy and locky and Skyrim-y, for lack of a better word
@@ -25,8 +36,10 @@ var rotation_helper
 # 3 Procedural headbob/crouch animations
 
 func _ready():
-	camera = $Neck/Camera3D
-	rotation_helper = $Neck
+	if !camera:
+		camera = $CamHolder/Camera3D
+	if !rotation_helper:	
+		rotation_helper = $CamHolder
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -75,11 +88,13 @@ func process_input(delta):
 	# ----------------------------------
 
 func process_movement(delta):
+	# Gravity
 	dir.y = 0
 	dir = dir.normalized()
 
 	vel.y += delta * GRAVITY
 
+	# Acceleration
 	var hvel = vel
 	hvel.y = 0
 
@@ -101,6 +116,28 @@ func process_movement(delta):
 
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		camera.rotate_x(deg_to_rad(-event.relative.y * MOUSE_SENSITIVITY))
-		rotation_helper.rotate_y(deg_to_rad(event.relative.x * MOUSE_SENSITIVITY * -1))
+		cam_input = event.relative
+		mousemov = event.relative.x
 		
+func _process(delta):
+	rotation_velocity = rotation_velocity.lerp(cam_input * MOUSE_SENSITIVITY, delta * MOUSE_SMOOTHING)
+	camera.rotate_x(-deg_to_rad(rotation_velocity.y))
+	rotation_helper.rotate_y(-deg_to_rad(rotation_velocity.x))
+
+	_cam_sway(delta)
+
+	camera.rotation_degrees.x = clamp(camera.rotation_degrees.x, -90, 90)
+	cam_input = Vector2.ZERO
+
+func _cam_sway(delta):
+	# Camera Sway Z
+	if mousemov != null:
+		var finalSway 
+		if mousemov > CAM_SWAY_THRESH:
+			finalSway = rotation_helper.rotation.lerp(CAM_SWAY, CAM_SWAY_LERP * delta)
+		elif mousemov < -CAM_SWAY_THRESH:
+			finalSway = rotation_helper.rotation.lerp(-CAM_SWAY, CAM_SWAY_LERP * delta)
+		else:
+			finalSway = rotation_helper.rotation.lerp(CAM_SWAY_NORMAL, CAM_SWAY_LERP * delta)
+		rotation_helper.rotation.z = finalSway.z
+		#finalSway = 0

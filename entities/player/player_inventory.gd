@@ -3,6 +3,7 @@ extends Node
 var level_trash_count : int = 0
 var level_recycle_count : int = 0
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -24,12 +25,14 @@ func add_item(item : GameItemObjective):
 # DEBUG ONLY (these are terrible methods)
 # Rewrite with better solution later
 func remove_garbage(amount : int):
-	level_trash_count -= amount	
+	if level_trash_count > 0:
+		level_trash_count -= amount	
 	EventBus.G_UI_UPDATE_COUNTS.emit()
 	pass
 
 func remove_recycle(amount : int):
-	level_recycle_count -= amount
+	if level_recycle_count > 0:
+		level_recycle_count -= amount
 	EventBus.G_UI_UPDATE_COUNTS.emit()
 	pass
 

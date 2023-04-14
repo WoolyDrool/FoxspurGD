@@ -9,7 +9,7 @@ public partial class gameplay_trail_manager : Node
 {
 	public float trailPercentage_Completed = 0;
 	private float _trailPercentage_Maximum;
-	private List<Godot.Object> _pieces = new List<Godot.Object>();
+	//private List<Godot.Object> _pieces = new List<Godot.Object>();
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{

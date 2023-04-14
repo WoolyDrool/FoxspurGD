@@ -7,8 +7,8 @@ var collectLabel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	trashLabel = $"TrashCount"
-	recLabel = $"RecCount"
+	trashLabel = $"HSplitContainer/TrashCount"
+	recLabel = $"HSplitContainer/RecCount"
 	totalLabel = $"TotalCount"
 	collectLabel = $"CollectedCount"
 

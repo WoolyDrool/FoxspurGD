@@ -3,67 +3,109 @@ using System;
 
 public partial class player_controller : CharacterBody3D
 {
-	public const float Speed = 5.0f;
-	public const float JumpVelocity = 4.5f;
+	// Controller variables
+	[Export] public float MAX_SPEED = 8;
+	[Export] public float JUMP_SPEED = 5;
+	[Export] public float ACCEL = 4.5f;
+	[Export] public float DEACCEL= 16;
+	[Export] public float MAX_SLOPE_ANGLE = 40;
+	[Export] public float MOUSE_SENSITIVITY = 1;
 
-	[Export] public Camera3D camera;
-	[Export] public Node3D rotationHelper;
+	// Internal variables
+	float GRAVITY = -(float)ProjectSettings.GetSetting("physics/3d/default_gravity");
+	Vector3 vel;
+	Vector3 dir;
 
-	// Get the gravity from the project settings to be synced with RigidBody nodes.
-	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+	// Refs
+	[Export] Camera3D camera;
+	[Export] Node3D rotation_helper;
 
-	// Vectors
-	internal Vector2 _inputDirection;
-	internal Vector3 _controllerDirection;
+	// TODO ----
+	// 1 Make angles/sliding feel better. Its very snappy and locky and Skyrim-y, for lack of a better word
+	// 2 Implement a state machine of some kind
+	// 3 Procedural headbob/crouch animations
 
 	public override void _Ready()
 	{
-		//camera = GetTree().Root.GetNode<Camera3D>();
+		if (camera == null)
+			camera = (Camera3D)GetNode("Neck/Camera3D");
+		if (rotation_helper == null)	
+			rotation_helper = (Node3D)GetNode("Neck");
+
+		Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
 
-	public override void _Process(double delta)
-	{
-		_ProcessInput();
-	}
 	public override void _PhysicsProcess(double delta)
 	{
-		Vector3 velocity = Velocity;
+		process_input(delta);
+		process_movement(delta);
+	}
 
-		// Handle Jump.
-		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
-			velocity.y = JumpVelocity;
+	void process_input(double delta)
+	{
+		// ----------------------------------
+		// Walking
+		var cam_xform = camera.GlobalTransform;
 
-		// Get the input direction and handle the movement/deceleration.
-		Velocity = _MoveController(velocity, delta);
+		Vector2 input_movement_vector;
+
+		input_movement_vector = Input.GetVector("movement_back", "movement_forward", "movement_left", "movement_right").Normalized();
+
+		// Basis vectors are already normalized.
+		dir += -cam_xform.Basis.Z * -input_movement_vector.Y;
+		dir += cam_xform.Basis.X * input_movement_vector.X;
+		// ----------------------------------
+
+		// ----------------------------------
+		// Jumping
+		if (IsOnFloor())
+			if (Input.IsActionJustPressed("movement_jump"))
+				vel.Y = JUMP_SPEED;
+		// ----------------------------------
+
+		// ----------------------------------
+		// Capturing/Freeing the cursor
+		if (Input.IsActionJustPressed("ui_cancel"))
+		{
+			if(Input.MouseMode == Input.MouseModeEnum.Visible)
+				Input.MouseMode = Input.MouseModeEnum.Captured;
+			else
+				Input.MouseMode = Input.MouseModeEnum.Visible;
+		}
+		// ----------------------------------
+	}
+	void process_movement(double delta)
+	{
+		dir.Y = 0;
+		dir = dir.Normalized();
+
+		vel.Y += (float)delta * GRAVITY;
+
+		var hvel = vel;
+		hvel.Y = 0;
+
+		var target = dir;
+		target *= MAX_SPEED;
+
+		float accel;
+		if (dir.Dot(hvel) > 0)
+			accel = ACCEL;
+		else
+			accel = DEACCEL;
+
+		hvel = hvel.Lerp(target, accel * (float)delta);
+		vel.X = hvel.X;
+		vel.Z = hvel.Z;
+		
+		Velocity = vel;
 		MoveAndSlide();
 	}
-
-	private void _ProcessInput()
+	public override void _Input(InputEvent @event)
 	{
-
-
-
-		_inputDirection = Input.GetVector("movement_left", "movement_right", "movement_forward", "movement_back");
-	}
-
-	private Vector3 _MoveController(Vector3 velocity, double delta)
-	{
-		// Add the gravity.
-		if (!IsOnFloor())
-			velocity.y -= gravity * (float)delta;
-
-		_controllerDirection = (Transform.basis * new Vector3(_inputDirection.x, 0, _inputDirection.y)).Normalized();
-		if (_controllerDirection != Vector3.Zero)
+		if (@event is InputEventMouseMotion mot && Input.MouseMode == Input.MouseModeEnum.Captured)
 		{
-			velocity.x = _controllerDirection.x * Speed;
-			velocity.z = _controllerDirection.z * Speed;
+			camera.RotateX(Mathf.DegToRad(-mot.Relative.Y * MOUSE_SENSITIVITY));
+			rotation_helper.RotateY(Mathf.DegToRad(mot.Relative.X * MOUSE_SENSITIVITY * -1));
 		}
-		else
-		{
-			velocity.x = Mathf.MoveToward(Velocity.x, 0, Speed);
-			velocity.z = Mathf.MoveToward(Velocity.z, 0, Speed);
-		}
-
-		return velocity;
 	}
 }

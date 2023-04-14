@@ -11,6 +11,8 @@ func _tool_primary() -> void:
 	
 	if ray.get_collider():
 		ray.get_collider()._on_chop()
+	else:
+		pass
 	
 
 func _on_tool_primary_cooldown_timeout():

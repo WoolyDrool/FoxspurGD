@@ -1,8 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dr8i6ui41hnqu"]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://entities/player/tools/tool.gd" id="1_5xmwn"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_61oxj"]
+[ext_resource type="Script" path="res://entities/tools/tool.gd" id="1_5xmwn"]
 
 [node name="Tool" type="Node3D"]
 script = ExtResource("1_5xmwn")
@@ -19,9 +17,8 @@ debug_shape_custom_color = Color(0, 0.839216, 0.462745, 1)
 
 [node name="ToolTertiaryCooldown" type="Timer" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Mesh Placeholder" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.2, 0, 0, 0, 1.4, 0, 0, 0, 0.2, 0, 0, 0)
-mesh = SubResource("BoxMesh_61oxj")
 
 [connection signal="timeout" from="ToolPrimaryCooldown" to="." method="_on_tool_primary_cooldown_timeout"]
 [connection signal="timeout" from="ToolSecondaryCooldown" to="." method="_on_tool_secondary_cooldown_timeout"]

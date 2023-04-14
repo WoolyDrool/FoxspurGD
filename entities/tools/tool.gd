@@ -6,7 +6,7 @@ class_name UsableTool
 	
 var toolName = "Default"
 var isEquip : bool = false
-var canPrimary : bool = true
+var canPrimary : bool = false
 var canSecondary : bool = true
 var canTertiary : bool = true
 
@@ -20,7 +20,8 @@ var tertiaryActionTimer
 @export var tertiaryActionCooldown : float
 
 func _get_nodes():
-	ray = $"Raycaster"
+	# For each weapon you need to make its children editable and adjust the ray position to be at camera level!
+	ray = $"../../AimCaster"
 	primaryActionTimer = $"ToolPrimaryCooldown"
 	secondaryActionTimer = $"ToolSecondaryCooldown"
 	tertiaryActionTimer = $"ToolTertiaryCooldown"
@@ -28,18 +29,10 @@ func _get_nodes():
 	primaryActionTimer.wait_time = primaryActionCooldown
 
 func _process(delta):
-	_process_input()
 	pass
 
-func _process_input():
-	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		if Input.is_action_just_pressed("tool_primary") && canPrimary:
-			_tool_primary()
-		if Input.is_action_just_pressed("tool_secondary") && canSecondary:
-			_tool_secondary()
-		if Input.is_action_just_pressed("tool_tertiary") && canTertiary:
-			_tool_tertiary()
-	pass
+func OnGrabTool():
+	canPrimary = true
 
 # Actions
 func _tool_primary() -> void:

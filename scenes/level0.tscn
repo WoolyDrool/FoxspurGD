@@ -1,0 +1,109 @@
+[gd_scene load_steps=17 format=3 uid="uid://ckc18ya6kl57j"]
+
+[ext_resource type="PackedScene" uid="uid://duno81k1j5wuq" path="res://globals/trail_manager.tscn" id="1_o46l1"]
+[ext_resource type="Script" path="res://systems/TrailTrashContainer.gd" id="2_qb4r7"]
+[ext_resource type="PackedScene" uid="uid://yhs843m8hbwk" path="res://globals/globals.tscn" id="3_3tgi3"]
+[ext_resource type="PackedScene" uid="uid://cd0wehro7d6bx" path="res://entities/items/objective_piece_recycle.tscn" id="3_kpqv2"]
+[ext_resource type="PackedScene" uid="uid://cb3i7036urd2f" path="res://entities/items/objective_piece_garbage.tscn" id="4_me6y2"]
+[ext_resource type="PackedScene" uid="uid://d2gne62upaj62" path="res://entities/environment/debug_ground.tscn" id="4_tbrck"]
+[ext_resource type="PackedScene" uid="uid://djvvh73ay3fb5" path="res://entities/objects/choppable_object.tscn" id="5_1w0ot"]
+[ext_resource type="PackedScene" uid="uid://jvmi8xmmmoka" path="res://entities/objects/locked_object.tscn" id="6_e5kue"]
+[ext_resource type="PackedScene" uid="uid://cy8kx5h12w1ho" path="res://entities/interactables/deposit_point.tscn" id="7_y0px1"]
+[ext_resource type="PackedScene" uid="uid://cu7wm3tq8eng5" path="res://entities/interactables/garb_deposit_point.tscn" id="8_twxeb"]
+[ext_resource type="PackedScene" uid="uid://8fhpirxxh437" path="res://entities/interactables/rec_deposit_point.tscn" id="9_rndub"]
+[ext_resource type="PackedScene" uid="uid://dpc2xjylcdgse" path="res://entities/player/player.tscn" id="10_1l725"]
+[ext_resource type="PackedScene" uid="uid://do4bf8g0uepl8" path="res://entities/tools/tool_pickup.tscn" id="13_5pmfy"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_d60at"]
+sky_top_color = Color(0.164706, 0.462745, 0.721569, 1)
+sky_horizon_color = Color(0.509804, 0.6, 0.619608, 1)
+sky_curve = 0.0222977
+ground_bottom_color = Color(0.337255, 0.321569, 0.317647, 1)
+
+[sub_resource type="Sky" id="Sky_3y8ud"]
+sky_material = SubResource("ProceduralSkyMaterial_d60at")
+
+[sub_resource type="Environment" id="Environment_f12el"]
+background_mode = 2
+sky = SubResource("Sky_3y8ud")
+
+[node name="level0" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_f12el")
+
+[node name="TrailManager" parent="." instance=ExtResource("1_o46l1")]
+
+[node name="TrailTrashContainer" type="Node3D" parent="TrailManager" groups=["Trails"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0174894, 0, 0.00172901)
+script = ExtResource("2_qb4r7")
+
+[node name="ObjectivePiece" parent="TrailManager/TrailTrashContainer" instance=ExtResource("3_kpqv2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="ObjectivePiece2" parent="TrailManager/TrailTrashContainer" instance=ExtResource("3_kpqv2")]
+transform = Transform3D(-0.345304, -0.850048, 0.397722, 0.110434, 0.384041, 0.916688, -0.931971, 0.360458, -0.038737, 2.44365, 1.76147, 2.36098)
+
+[node name="ObjectivePiece3" parent="TrailManager/TrailTrashContainer" instance=ExtResource("3_kpqv2")]
+transform = Transform3D(0.103131, 0.307997, -0.945781, -0.801073, 0.589361, 0.104576, 0.589616, 0.746855, 0.307509, 1.44682, 3.37093, -0.444442)
+
+[node name="ObjectivePiece4" parent="TrailManager/TrailTrashContainer" instance=ExtResource("3_kpqv2")]
+transform = Transform3D(0.103131, 0.307997, -0.945781, -0.801073, 0.589361, 0.104576, 0.589616, 0.746855, 0.307509, 5.02759, 2.83444, 2.37195)
+
+[node name="ObjectivePiece5" parent="TrailManager/TrailTrashContainer" instance=ExtResource("3_kpqv2")]
+transform = Transform3D(0.879842, 0.244237, -0.407708, -0.310297, 0.944985, -0.103535, 0.359991, 0.217605, 0.907224, 3.88717, 0.428901, 5.04175)
+
+[node name="ObjectivePiece6" parent="TrailManager/TrailTrashContainer" instance=ExtResource("3_kpqv2")]
+transform = Transform3D(0.551565, 0.356972, -0.753888, -0.60351, 0.79468, -0.0652573, 0.575805, 0.490973, 0.653755, 4.81237, 4.46121, -0.00479126)
+
+[node name="ObjectivePiece7" parent="TrailManager/TrailTrashContainer" instance=ExtResource("4_me6y2")]
+
+[node name="ObjectivePiece8" parent="TrailManager/TrailTrashContainer" instance=ExtResource("4_me6y2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1374, 1.49025, -3.30091)
+
+[node name="ObjectivePiece9" parent="TrailManager/TrailTrashContainer" instance=ExtResource("4_me6y2")]
+transform = Transform3D(-0.793739, -0.493076, -0.356166, -0.493076, 0.178722, 0.851431, -0.356166, 0.851431, -0.384983, 1.99811, 2.88116, -2.83154)
+
+[node name="ObjectivePiece10" parent="TrailManager/TrailTrashContainer" instance=ExtResource("4_me6y2")]
+transform = Transform3D(-0.793739, -0.493076, -0.356166, -0.493076, 0.178722, 0.851431, -0.356166, 0.851431, -0.384983, 7.76114, 2.88116, 5.49953)
+
+[node name="ObjectivePiece11" parent="TrailManager/TrailTrashContainer" instance=ExtResource("4_me6y2")]
+transform = Transform3D(-0.793739, -0.493076, -0.356166, -0.493076, 0.178722, 0.851431, -0.356166, 0.851431, -0.384983, 6.52571, 5.1655, 1.62163)
+
+[node name="ObjectivePiece12" parent="TrailManager/TrailTrashContainer" instance=ExtResource("4_me6y2")]
+transform = Transform3D(-0.345304, 0.110434, -0.931971, -0.850048, 0.384041, 0.360458, 0.397722, 0.916688, -0.0387369, 6.57112, 2.81681, 4.89946)
+
+[node name="Globals" parent="." instance=ExtResource("3_3tgi3")]
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Geometry" type="Node" parent="World"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Entities" type="Node3D" parent="."]
+
+[node name="ChoppableObject" parent="Entities" instance=ExtResource("5_1w0ot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, -9)
+
+[node name="LockedObject" parent="Entities" instance=ExtResource("6_e5kue")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2, 0, -9.1)
+
+[node name="DepositPoint" parent="." instance=ExtResource("7_y0px1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9)
+
+[node name="GarbDepositPoint" parent="." instance=ExtResource("8_twxeb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -9)
+
+[node name="RecDepositPoint" parent="." instance=ExtResource("9_rndub")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -9)
+
+[node name="Player" parent="." instance=ExtResource("10_1l725")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -8, 2, 0)
+
+[node name="Ground" parent="." instance=ExtResource("4_tbrck")]
+
+[node name="ToolPickup" parent="." instance=ExtResource("13_5pmfy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 7)

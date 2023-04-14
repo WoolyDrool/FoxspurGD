@@ -12,7 +12,6 @@ albedo_color = Color(0.988235, 0.627451, 0, 1)
 
 [node name="GarbDepositPoint" type="Area3D"]
 script = ExtResource("1_6dto7")
-DepositType = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1.38344, 0, 0, 0, 1.38344, 0, 0, 0, 1.38344, 0, 0.7, 0)
